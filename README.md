@@ -1,67 +1,29 @@
-# TD(lambda) Reinforcement Learning Market-Making Strategy
+# RL Market-Making Strategy Archive
 
-This repository contains a TD(lambda)-based reinforcement learning market-making strategy developed for a simulated live trading competition environment.
+This repository documents five strategy iterations from the Stevens High Frequency Trading Competition.
 
-## Overview
+The project evolved from simple rule-based market making to online statistical models, regime-aware quoting, FFT phase-lag signals, and finally a TD(λ)-based reinforcement learning market-making strategy.
 
-The strategy quotes bid and ask prices around the market mid-price while learning from inventory changes, fills, order-book conditions, and short-term price behavior. It uses tile coding for state representation and online TD(lambda) updates for action-value learning.
+## Strategy Iterations
 
-## Key Features
+| Folder | Strategy Idea |
+|---|---|
+| `strategy_iterations/week_01_fft_adaptive_spread/` | Early FFT adaptive-spread market maker using rolling mid-price signals, order book imbalance, and inventory controls |
+| `strategy_iterations/week_02_online_ridge_market_maker/` | Online ridge regression market maker using microprice, imbalance, EWMA volatility, and short-term return features |
+| `strategy_iterations/week_03_regime_aware_market_maker/` | Regime-aware market maker using microprice, GARCH-style volatility, downside-risk features, and bull/bear quote adjustment |
+| `strategy_iterations/week_04_fft_phase_lag/` | High-frequency FFT phase-lag strategy using lead-lag relationships between CS1, CS2, and CS3 with order book imbalance filtering |
+| `strategy_iterations/week_05_final_td_lambda/` | Final TD(λ) reinforcement learning market-making strategy with tile coding, liquidity guards, rolling retraining, and pace control |
 
-- TD(lambda) reinforcement learning core
-- Tile coding for continuous state representation
-- Inventory-aware bid/ask quoting
-- Liquidity guards for thin and crossed books
-- Pace guard to help satisfy minimum fill requirements
-- Rolling retraining using recent market observations
-- End-of-session position flattening
+## Final Strategy
 
-## State Variables
+The final version is located in:
 
-The model uses a five-dimensional state representation:
+`strategy_iterations/week_05_final_td_lambda/`
 
-1. Normalized inventory
-2. Order-book imbalance
-3. Spread relative to recent volatility
-4. Short-term vs. long-term volatility ratio
-5. Ticks since last fill
+It uses a TD(λ)-based reinforcement learning framework to quote bid and ask prices around the market mid-price. The strategy includes tile coding, online SARSA-style updates, inventory-aware quoting, liquidity guards, rolling retraining, and end-of-session position flattening.
 
-## Action Space
+## Notes
 
-Each action is a pair of bid and ask offsets from the mid-price. The model chooses from a discrete set of offset combinations and updates its action values online.
+This project was developed for a simulated trading competition environment. The live trading components require the SHIFT trading package and private configuration files, which are not included in this repository.
 
-## Risk Controls
-
-The strategy includes several non-RL safeguards:
-
-- Skip quoting when the order book is too thin
-- Widen quotes during crossed-book conditions
-- Skew quotes to reduce inventory risk
-- Enforce maximum inventory limits
-- Cancel pending orders and flatten positions at the end of the session
-
-## Requirements
-
-Basic Python dependencies are listed in `requirements.txt`.
-
-The live trading portion also requires access to the SHIFT trading package and private connection credentials. These credentials are not included in this repository and should be provided through environment variables.
-
-## Environment Variables
-
-Before running in a SHIFT-connected environment, set:
-
-```bash
-export SHIFT_USERNAME="your_username"
-export SHIFT_CFG_FILE="initiator.cfg"
-export SHIFT_PASSWORD="your_password"
-```
-
-Then run:
-
-```bash
-python td_lambda_market_maker.py
-```
-
-## Note
-
-This project was built for a simulated trading competition environment. It is intended to demonstrate strategy design, reinforcement learning implementation, and market-making risk controls, not to provide production trading advice.
+Private credentials, account information, and local configuration values have been removed.
